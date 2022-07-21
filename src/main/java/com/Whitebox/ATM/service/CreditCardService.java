@@ -18,10 +18,12 @@ public class CreditCardService {
     @Autowired
     CreditCardDao creditCardDao;
 
-    public void save(Account account, String pin, Bank bank) {
+    public void save(Account account, Bank bank, String pin, String cvv, String expireDate) {
         CreditCard creditCard = new CreditCard();
         creditCard.setCardNumber(bank.getCreditCardNumber());
         creditCard.setAccount(account);
+        creditCard.setCvv(cvv);
+        creditCard.setExpireDate(expireDate);
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

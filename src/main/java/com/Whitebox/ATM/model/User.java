@@ -14,13 +14,15 @@ public class User {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
+    private String email;
     @OneToMany
     private List<Account> accounts;
 
     //TODO
-    public User(String firstName, String lastName, Bank bank) {
+    public User(String firstName, String lastName, String email, Bank bank) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.email = email;
         this.id = bank.generateID();
 
         //create a new list of accounts for the new user
@@ -39,6 +41,10 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public User() {

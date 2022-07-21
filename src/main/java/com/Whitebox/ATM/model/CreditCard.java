@@ -11,6 +11,8 @@ public class CreditCard {
     @Column(name = "card_number")
     private String cardNumber;
     private byte secretPin[];
+    private String cvv;
+    private String expireDate;
 
     public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
@@ -24,13 +26,23 @@ public class CreditCard {
         this.account = account;
     }
 
+    public void setCvv(String cvv) {
+        this.cvv = cvv;
+    }
+
+    public void setExpireDate(String expireDate) {
+        this.expireDate = expireDate;
+    }
+
     @ManyToOne
     private Account account;
 
     //TODO
-    public CreditCard(Account account, String pin, Bank bank) {
+    public CreditCard(Account account, Bank bank, String pin, String cvv, String expireDate) {
         this.cardNumber = bank.getCreditCardNumber();
         this.account = account;
+        this.cvv = cvv;
+        this.expireDate = expireDate;
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

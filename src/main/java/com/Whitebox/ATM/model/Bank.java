@@ -103,8 +103,8 @@ public class Bank {
     }
 
 
-    public User addUser(String firstName, String lastName) {
-        User newUser = new User(firstName, lastName, this);
+    public User addUser(String firstName, String lastName, String email) {
+        User newUser = new User(firstName, lastName, email, this);
         this.users.add(newUser);
 
         Account newAccount = new Account(String.valueOf(AccountType.SAVINGS), newUser, this);

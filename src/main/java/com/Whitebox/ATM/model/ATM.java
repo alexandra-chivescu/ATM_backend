@@ -307,13 +307,13 @@ public class ATM {
         Scanner scanner = new Scanner(System.in);
         Bank bcr = new Bank("Banca Comerciala Romana");
 
-        User user1 = bcr.addUser("Alexandra", "Chivescu");
-        User user2 = bcr.addUser("Cristian", "Diaconu");
+        User user1 = bcr.addUser("Alexandra", "Chivescu", "alechivescu@gmail.com");
+        User user2 = bcr.addUser("Cristian", "Diaconu", "crisdiaconu@gmail.com");
         Account account1 = new Account(String.valueOf(AccountType.SAVINGS), user1, bcr);
         Account account2 = new Account(String.valueOf(AccountType.CHECKING), user1, bcr);
         Account account3 = new Account(String.valueOf(AccountType.CHECKING), user2, bcr);
-        CreditCard creditCard1 = new CreditCard(account2, "2345", bcr);
-        CreditCard creditCard2 = new CreditCard(account2, "1234", bcr);
+        CreditCard creditCard1 = new CreditCard(account2, bcr, "2345", "123", "29-12-2023");
+        CreditCard creditCard2 = new CreditCard(account2, bcr, "1234", "008", "03-11-2026");
 
         bcr.addAccount(account1);
         user1.addAccount(account1);

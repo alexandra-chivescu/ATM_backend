@@ -18,10 +18,11 @@ public class UserService {
     @Autowired
     UserDao userDao;
 
-    public void save(String firstName, String lastName, Bank bank) {
+    public void save(String firstName, String lastName, String email, Bank bank) {
         User user = new User();
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setEmail(email);
         user.setId(bank.generateID());
 
         System.out.println("User:" + lastName + " " + firstName  + "-> ID: " + bank.generateID() + "\n");
