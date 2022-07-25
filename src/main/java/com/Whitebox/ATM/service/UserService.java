@@ -2,10 +2,7 @@ package com.Whitebox.ATM.service;
 
 import com.Whitebox.ATM.dao.TransactionDao;
 import com.Whitebox.ATM.dao.UserDao;
-import com.Whitebox.ATM.model.Account;
-import com.Whitebox.ATM.model.Bank;
-import com.Whitebox.ATM.model.Transaction;
-import com.Whitebox.ATM.model.User;
+import com.Whitebox.ATM.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,4 +30,11 @@ public class UserService {
         return userDao.findAll();
     }
 
+    public User getUserById(int id) {
+        return userDao.findById(id);
+    }
+
+    public CreditCard getUserCreditCard(int userId) {
+        return userDao.findCreditCards(userId);
+    }
 }

@@ -1,48 +1,60 @@
 package com.Whitebox.ATM.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-@Entity
-@Table(name="creditCard")
+@Entity(name = "credit_card")
+@Table(
+        name="credit_card",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "card_number_unique", columnNames = "card_number")
+        })
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CreditCard {
     @Id
-    @Column(name = "card_number")
+    @Column(
+            name = "card_number",
+            nullable = false
+    )
     private String cardNumber;
+    @Column(
+            name = "pin",
+            nullable = false,
+            unique = true
+    )
     private byte secretPin[];
+    @Column(
+            name = "cvv",
+            nullable = false
+    )
     private String cvv;
-    private String expireDate;
-
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-
-    public void setSecretPin(byte[] secretPin) {
-        this.secretPin = secretPin;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
-    public void setCvv(String cvv) {
-        this.cvv = cvv;
-    }
-
-    public void setExpireDate(String expireDate) {
-        this.expireDate = expireDate;
-    }
+    @Column(
+            name = "expiration_date",
+            nullable = false
+    )
+    private String expirationDate;
 
     @ManyToOne
+    @JoinColumn(
+            name = "account_id",
+            referencedColumnName = "id"
+    )
     private Account account;
 
-    //TODO
     public CreditCard(Account account, Bank bank, String pin, String cvv, String expireDate) {
         this.cardNumber = bank.getCreditCardNumber();
         this.account = account;
         this.cvv = cvv;
-        this.expireDate = expireDate;
+        this.expirationDate = expireDate;
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -52,14 +64,6 @@ public class CreditCard {
             e.printStackTrace();
             System.exit(1);
         }
-    }
-
-    public CreditCard() {
-
-    }
-
-    public String getCardNumber() {
-        return cardNumber;
     }
 
     public boolean isValidPin(String pin) {

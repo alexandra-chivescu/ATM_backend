@@ -22,7 +22,6 @@ public class BankService {
     }
 
     public List<Bank> getListBanks() {
-
         return bankDao.findAll();
     }
 }

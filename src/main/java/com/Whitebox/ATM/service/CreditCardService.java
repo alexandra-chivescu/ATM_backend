@@ -4,7 +4,6 @@ import com.Whitebox.ATM.dao.CreditCardDao;
 import com.Whitebox.ATM.model.Account;
 import com.Whitebox.ATM.model.Bank;
 import com.Whitebox.ATM.model.CreditCard;
-import com.Whitebox.ATM.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,7 @@ public class CreditCardService {
         creditCard.setCardNumber(bank.getCreditCardNumber());
         creditCard.setAccount(account);
         creditCard.setCvv(cvv);
-        creditCard.setExpireDate(expireDate);
+        creditCard.setExpirationDate(expireDate);
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

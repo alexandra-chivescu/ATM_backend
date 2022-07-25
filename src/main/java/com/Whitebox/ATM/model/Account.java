@@ -1,60 +1,67 @@
 package com.Whitebox.ATM.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(name="account")
 @Table(name="account")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Account {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "account_sequence",
+            sequenceName = "account_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy= GenerationType.SEQUENCE,
+            generator = "account_sequence"
+    )
+    @Column(
+            name = "id",
+            updatable = false
+    )
     private int id;
     @Column(name = "account_type")
-    private String AccountType;
+    private AccountType accountType;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
+    @ManyToOne
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "id"
+    )
     private User holder;
     @OneToMany
+    @JoinColumn(
+            name = "transaction_id",
+            referencedColumnName = "id"
+    )
     private List<Transaction> transactions;
     @OneToMany
     private List<CreditCard> creditCards;
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setAccountType(String accountType) {
-        AccountType = accountType;
-    }
-
-    public void setHolder(User holder) {
-        this.holder = holder;
-    }
-
-    //TODO must erase this constructor and use AccountService
-    public Account(String name, User holder, Bank bank) {
-        this.AccountType = name;
+    public Account(AccountType name, User holder, Bank bank) {
+        this.accountType = name;
         this.holder = holder;
         this.id = bank.generateID();
 
         this.transactions = new ArrayList<Transaction>();
         this.creditCards = new ArrayList<CreditCard>();
     }
-    public Account() {
-        this.transactions = new ArrayList<Transaction>();
-        this.creditCards = new ArrayList<CreditCard>();
-    }
-
-    public int getId() {
-        return id;
-    }
 
     public String getInfoLine() {
         double balance = this.getBalance();
         //Write for each currency
-        return String.format("%s : lei %.02f : %s", this.id, balance, this.AccountType);
+        return String.format("%s : lei %.02f : %s", this.id, balance, this.accountType);
     }
 
     public double getBalance() {

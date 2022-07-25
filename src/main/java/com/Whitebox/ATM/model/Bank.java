@@ -1,22 +1,54 @@
 package com.Whitebox.ATM.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Entity
+@Entity(name="bank")
 @Table(name="bank")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Bank {
     @Id
+    @SequenceGenerator(
+            name = "bank_sequence",
+            sequenceName = "bank_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy= GenerationType.SEQUENCE,
+            generator = "bank_sequence"
+    )
+    @Column(
+            name = "id",
+            updatable = false
+    )
     private int id;
+    @Column(
+            name = "name",
+            nullable = false,
+            unique = true
+    )
     private String name;
     @OneToMany
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "id"
+    )
     private List<User> users;
     @OneToMany
+    @JoinColumn(
+            name = "account_id",
+            referencedColumnName = "id"
+    )
     private List<Account> accounts;
     @OneToMany
     private List<CreditCard> creditCards;
@@ -24,16 +56,6 @@ public class Bank {
     public Bank(String name) {
         this.id = id;
         this.name = name;
-        this.users = new ArrayList<User>();
-        this.accounts = new ArrayList<Account>();
-        this.creditCards = new ArrayList<CreditCard>();
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Bank() {
         this.users = new ArrayList<User>();
         this.accounts = new ArrayList<Account>();
         this.creditCards = new ArrayList<CreditCard>();
@@ -107,15 +129,11 @@ public class Bank {
         User newUser = new User(firstName, lastName, email, this);
         this.users.add(newUser);
 
-        Account newAccount = new Account(String.valueOf(AccountType.SAVINGS), newUser, this);
+        Account newAccount = new Account(AccountType.SAVINGS, newUser, this);
         newUser.addAccount(newAccount);
         this.addAccount(newAccount);
 
         return newUser;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public User userAcceptCard(int idUser, String pin) {

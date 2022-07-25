@@ -1,24 +1,65 @@
 package com.Whitebox.ATM.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name="user")
+@Entity(name = "user")
+@Table(
+        name="\"user\"",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "user_email_unique", columnNames = "email")
+        }
+)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class User {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy= GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
+    @Column(
+            name = "id",
+            updatable = false
+    )
     private int id;
-    @Column(name = "first_name")
+    @Column(
+            name = "first_name",
+            nullable = false
+    )
     private String firstName;
-    @Column(name = "last_name")
+    @Column(
+            name = "last_name",
+            nullable = false
+    )
     private String lastName;
+    @Column(
+            name = "email",
+            nullable = false
+    )
     private String email;
-    @OneToMany
+    @OneToMany(
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(
+            name = "account_id",
+            referencedColumnName = "id"
+    )
     private List<Account> accounts;
 
-    //TODO
     public User(String firstName, String lastName, String email, Bank bank) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -31,32 +72,8 @@ public class User {
         System.out.println("User:" + lastName + " " + firstName  + "-> ID: " + this.id + "\n");
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public User() {
-        this.accounts = new ArrayList<Account>();
-    }
-
     public void addAccount(Account account) {
         this.accounts.add(account);
-    }
-
-    public int getId() {
-        return id;
     }
 
     public void printAccountsInfo() {
