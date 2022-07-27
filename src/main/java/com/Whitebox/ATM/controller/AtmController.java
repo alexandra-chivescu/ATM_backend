@@ -1,17 +1,16 @@
 package com.Whitebox.ATM.controller;
 
 import com.Whitebox.ATM.dao.AtmDao;
-import com.Whitebox.ATM.model.Bank;
-import com.Whitebox.ATM.model.User;
+import com.Whitebox.ATM.model.dto.AtmDto;
+import com.Whitebox.ATM.model.dto.ClientDepositDto;
 import com.Whitebox.ATM.service.AtmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Scanner;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/")
+@ResponseBody
 public class AtmController {
 
     @Autowired
@@ -20,27 +19,30 @@ public class AtmController {
     @Autowired
     AtmDao atmDao;
 
-    @GetMapping("/saveNewAtm")
-    public void saveNewUser(@RequestParam("location") String location) {
-        atmService.save(location);
+    @PostMapping ("/createAtm")
+    public String saveNewAtm(@RequestBody AtmDto atmDto) {
+        atmService.save(atmDto.location);
+        return "New Atm successfully created.";
     }
 
-    //TODO - make some changes
-    @GetMapping("/atm/withdraw/")
-    public void showWithdrawal(@RequestParam User user, Scanner scanner) {
-        atmService.withdraw(user, scanner);
+    @PutMapping("/atm/accountBalance")
+    public double showAccountBalance(@RequestBody ClientDepositDto clientDepositDto) {
+        return atmService.getBalance(clientDepositDto.accountId);
     }
 
-    //TODO - make some changes
-    @GetMapping("/atm/deposit")
-    public void showDeposit(@RequestParam User user, Scanner scanner) {
-        atmService.deposit(user, scanner);
+    @PutMapping("/atm/withdraw/{amountToWithdraw}")
+    public void withdraw(@RequestBody ClientDepositDto clientDepositDto, @PathVariable double amountToWithdraw) {
+        atmService.withdraw(clientDepositDto.accountId, amountToWithdraw);
     }
 
-    //TODO - make some changes
-    @GetMapping("/atm/transfer")
-    public void showTransfer(@RequestParam User user, Scanner scanner) {
-        atmService.transfer(user, scanner);
+    @PutMapping("/atm/deposit")
+    public void deposit(@RequestBody ClientDepositDto clientDepositDto) {
+        atmService.deposit(clientDepositDto.accountId, clientDepositDto.amount);
+    }
+
+    @PutMapping("/atm/transfer/{toAccount}/{amount}")
+    public void transfer(@RequestBody ClientDepositDto clientDepositDto, @PathVariable int toAccount, @PathVariable double amount) {
+        atmService.transfer(clientDepositDto.accountId, toAccount, amount);
     }
 
 }

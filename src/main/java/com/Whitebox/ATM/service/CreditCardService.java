@@ -18,7 +18,7 @@ public class CreditCardService {
     CreditCardDao creditCardDao;
 
     public void save(Account account, Bank bank, String pin, String cvv, String expireDate) {
-        CreditCard creditCard = new CreditCard();
+        CreditCard creditCard = new CreditCard(account, bank, pin, cvv, expireDate);
         creditCard.setCardNumber(bank.getCreditCardNumber());
         creditCard.setAccount(account);
         creditCard.setCvv(cvv);

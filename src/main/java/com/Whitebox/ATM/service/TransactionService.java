@@ -15,7 +15,7 @@ public class TransactionService {
     TransactionDao transactionDao;
 
     public void save(double amount, Account account) {
-        Transaction transaction = new Transaction();
+        Transaction transaction = new Transaction(amount, account);
         transaction.setAmount(amount);
         transaction.setAccount(account);
         transactionDao.save(transaction);

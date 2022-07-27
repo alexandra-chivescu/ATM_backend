@@ -1,21 +1,12 @@
 package com.Whitebox.ATM.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Entity(name="bank")
-@Table(name="bank")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Entity(name="banks")
+@Table(name="banks")
 public class Bank {
     @Id
     @SequenceGenerator(
@@ -39,26 +30,26 @@ public class Bank {
     )
     private String name;
     @OneToMany
-    @JoinColumn(
-            name = "user_id",
-            referencedColumnName = "id"
-    )
-    private List<User> users;
+    private List<Client> users;
     @OneToMany
-    @JoinColumn(
-            name = "account_id",
-            referencedColumnName = "id"
-    )
     private List<Account> accounts;
     @OneToMany
     private List<CreditCard> creditCards;
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Bank(String name) {
         this.id = id;
         this.name = name;
-        this.users = new ArrayList<User>();
+        this.users = new ArrayList<Client>();
         this.accounts = new ArrayList<Account>();
         this.creditCards = new ArrayList<CreditCard>();
+    }
+
+    public Bank() {
+
     }
 
     public int generateID() {
@@ -66,7 +57,7 @@ public class Bank {
         boolean notUniqueID;
         do {
             notUniqueID = false;
-            for (User user : this.users) {
+            for (Client user : this.users) {
                 if(id == user.getId()) {
                     notUniqueID = true;
                     break;
@@ -125,8 +116,8 @@ public class Bank {
     }
 
 
-    public User addUser(String firstName, String lastName, String email) {
-        User newUser = new User(firstName, lastName, email, this);
+    public Client addUser(String firstName, String lastName, String email) {
+        Client newUser = new Client(firstName, lastName, email);
         this.users.add(newUser);
 
         Account newAccount = new Account(AccountType.SAVINGS, newUser, this);
@@ -136,8 +127,8 @@ public class Bank {
         return newUser;
     }
 
-    public User userAcceptCard(int idUser, String pin) {
-        for(User user: this.users) {
+    public Client userAcceptCard(int idUser, String pin) {
+        for(Client user: this.users) {
             for(CreditCard creditCard : this.creditCards) {
                 if (user.getId() == idUser && creditCard.isValidPin(pin))
                     return user;

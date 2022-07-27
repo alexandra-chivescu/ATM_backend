@@ -1,54 +1,33 @@
 package com.Whitebox.ATM;
 
-import com.Whitebox.ATM.dao.UserDao;
-import com.Whitebox.ATM.model.Account;
-import com.Whitebox.ATM.model.AccountType;
-import com.Whitebox.ATM.model.CreditCard;
-import com.Whitebox.ATM.model.User;
-import com.Whitebox.ATM.service.UserService;
+import com.Whitebox.ATM.dao.ClientDao;
+import com.Whitebox.ATM.model.Client;
+import com.Whitebox.ATM.service.ClientService;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.core.AutoConfigureCache;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 
 import java.util.List;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserServiceTest {
 
-    @Autowired
-    private UserService userService;
+         @LocalServerPort
+         int port;
 
-    @Autowired
-    private UserDao userDao;
+        @Autowired
+        private ClientService clientService;
 
-    @Test
-    public void saveUser() {
-        CreditCard creditCard = CreditCard.builder()
-                .cvv("345")
-                .expirationDate("29-12-2023")
-                .build();
+        @Autowired
+        private ClientDao userDao;
 
-        Account account = Account.builder()
-                .accountType(AccountType.CHECKING)
-                .creditCards(List.of(creditCard))
-                .build();
+        @Test
+        public void printUsers() {
+            List<Client> clients =
+                    userDao.findAll();
 
-        User user =
-                User.builder()
-                        .email("alechivescu@gmail.com")
-                        .firstName("Alex")
-                        .lastName("Chivescu")
-                        .accounts(List.of(account))
-                        .build();
-
-    }
-
-    @Test
-    public void printUsers() {
-        List<User> users =
-                userDao.findAll();
-
-        System.out.println("users = " + users);
-    }
+            System.out.println("clients = " + clients);
+        }
 }

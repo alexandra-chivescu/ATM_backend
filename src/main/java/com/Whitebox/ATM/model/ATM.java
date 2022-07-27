@@ -1,18 +1,9 @@
 package com.Whitebox.ATM.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
-@Entity(name = "atm")
-@Table(name = "atm")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Entity(name = "atms")
+@Table(name = "atms")
 public class ATM {
     @Id
     @SequenceGenerator(
@@ -35,5 +26,7 @@ public class ATM {
     )
     private String location;
 
-
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }

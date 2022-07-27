@@ -1,24 +1,16 @@
 package com.Whitebox.ATM.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-@Entity(name = "credit_card")
+@Entity(name = "credit_cards")
 @Table(
-        name="credit_card",
+        name="credit_cards",
         uniqueConstraints = {
                 @UniqueConstraint(name = "card_number_unique", columnNames = "card_number")
         })
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+
 public class CreditCard {
     @Id
     @Column(
@@ -49,6 +41,30 @@ public class CreditCard {
             referencedColumnName = "id"
     )
     private Account account;
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public void setSecretPin(byte[] secretPin) {
+        this.secretPin = secretPin;
+    }
+
+    public void setCvv(String cvv) {
+        this.cvv = cvv;
+    }
+
+    public void setExpirationDate(String expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public CreditCard() {
+
+    }
 
     public CreditCard(Account account, Bank bank, String pin, String cvv, String expireDate) {
         this.cardNumber = bank.getCreditCardNumber();
