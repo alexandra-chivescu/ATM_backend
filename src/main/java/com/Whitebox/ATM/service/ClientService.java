@@ -1,6 +1,9 @@
 package com.Whitebox.ATM.service;
 
+import com.Whitebox.ATM.dao.AccountDao;
+import com.Whitebox.ATM.dao.BankDao;
 import com.Whitebox.ATM.dao.ClientDao;
+import com.Whitebox.ATM.dao.CreditCardDao;
 import com.Whitebox.ATM.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,27 +16,22 @@ public class ClientService {
     @Autowired
     ClientDao clientDao;
 
+    @Autowired
+    AccountDao accountDao;
 
-    public void save(String firstName, String lastName, String email) {
-        Client client = new Client(firstName, lastName, email);
-        client.setFirstName(firstName);
-        client.setLastName(lastName);
-        client.setEmail(email);
+    @Autowired
+    BankDao bankDao;
 
-        clientDao.save(client);
+    @Autowired
+    CreditCardDao creditCardDao;
+
+    public Client getClientById(int id) {
+        return clientDao.findById(id).get();
     }
 
     public List<Client> getListClients() {
         return clientDao.findAll();
     }
-
-    public Client getClientById(int id) {
-        return clientDao.findById(id);
-    }
-
-    /*public CreditCard getUserCreditCard(int userId) {
-        return userDao.findCreditCards(userId);
-    } */
 
     public Client getClientByEmailAddress(String email) {
         return clientDao.findUserByEmailAddress(email);
@@ -41,5 +39,17 @@ public class ClientService {
 
     public int updateClientNameByEmailAddress(String first_name ,String email) {
         return clientDao.updateUserNameByEmailAddress(first_name, email);
+    }
+
+    public void addAccount(int clientId, int bankId, String pin, String cvv, String accountType) {
+        Client client = clientDao.findById(clientId).get();
+        Account account = new Account(AccountType.valueOf(accountType), client, bankDao.findById(bankId).get());
+        client.addAccount(account);
+        accountDao.save(account);
+
+        CreditCard creditCard = new CreditCard(account, bankDao.findById(bankId).get(), pin, cvv);
+        account.addCreditCard(creditCard);
+        bankDao.findById(bankId).get().addCreditCard(creditCard);
+        creditCardDao.save(creditCard);
     }
 }

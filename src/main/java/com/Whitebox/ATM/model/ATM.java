@@ -1,6 +1,7 @@
 package com.Whitebox.ATM.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity(name = "atms")
 @Table(name = "atms")
@@ -24,6 +25,7 @@ public class ATM {
             name = "location",
             nullable = false
     )
+    @NotBlank(message = "The location is required.")
     private String location;
 
     public void setLocation(String location) {

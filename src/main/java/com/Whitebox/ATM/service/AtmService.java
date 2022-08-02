@@ -1,5 +1,8 @@
 package com.Whitebox.ATM.service;
 
+import com.Whitebox.ATM.Exceptions.BalanceSmallerThanAmountToWithdrawException;
+import com.Whitebox.ATM.Exceptions.NegativeAmountException;
+import com.Whitebox.ATM.Exceptions.NotEnoughBanknotesInTheAtmException;
 import com.Whitebox.ATM.dao.AtmDao;
 import com.Whitebox.ATM.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 @Service
 public class AtmService {
@@ -24,51 +26,48 @@ public class AtmService {
         atmDao.save(atm);
     }
 
-    public List<ATM> getListAtms() {
-        return atmDao.findAll();
-    }
-
     public double getBalance(int accountId) {
         return accountService.getBalance(accountId);
     }
 
     public void deposit(int accountId, double amount) {
+        amountLessThanZeroExceptionHandle(amount);
         accountService.addTransaction(accountId, amount);
     }
 
     public void transfer(int accountId, int toAccount, double amount) {
-        //TODO exception AdviceController - accountBalance > 0
+        amountLessThanZeroExceptionHandle(amount);
+        amountGreaterThanAccountBalanceExceptionHandle(accountId, amount);
         accountService.addTransaction(accountId, -1 * amount);
         accountService.addTransaction(toAccount, amount);
     }
 
     public void withdraw(int accountId, double amount) {
-        //TODO exception - accountBalance > 0
+        amountLessThanZeroExceptionHandle(amount);
+        amountGreaterThanAccountBalanceExceptionHandle(accountId, amount);
         //TODO exception - verify if the number of the account exists
         //                 for this use numAccounts
-        //TODO exception - amount > 0
-        //TODO exception - amount > accountBalance
-
-            int[] values = Banknote.getValuesOfBanknotes();
-            int[] amounts = Banknote.getAmountsOfBanknotes();
+        // if(accountId > userDao.getClientById)
+        int[] values = Banknote.getValuesOfBanknotes();
+        int[] amounts = Banknote.getAmountsOfBanknotes();
 
             List<Integer[]> results = withdrawSolution(values, amounts, new int[values.length], amount, 0);
-            boolean isWithdrawable = true;
+            boolean isWithdrawable = true; //for the verification of the algorithm (see the left banknotes in the terminal)
             int[] copyAmounts = amounts;
 
             if (results.size() > 0) {
                 for (int i = 0; i < values.length; i++) {
                     if (amounts[i] - results.get(results.size() - 1)[i] < 0) {
-                        System.out.println("We are sorry. The sum cannot be withdrawn because the ATM does not have enough banknotes.");
                         isWithdrawable = false;
+                        throw new NotEnoughBanknotesInTheAtmException();
                     } else
                         amounts[i] = amounts[i] - results.get(results.size() - 1)[i];
                 }
                 if (isWithdrawable == false)
                     amounts = copyAmounts;
             } else {
-                System.out.println("We are sorry. The sum cannot be withdrawn because the ATM does not have enough banknotes.");
                 isWithdrawable = false;
+                throw new NotEnoughBanknotesInTheAtmException();
             }
             if (isWithdrawable == true) {
                 System.out.println("The sum was successfully withdrawn by the user.");
@@ -115,5 +114,13 @@ public class AtmService {
         return total;
     }
 
+    public void amountLessThanZeroExceptionHandle(double amount) {
+        if(amount <= 0)
+            throw new NegativeAmountException(amount);
+    }
 
+    public void amountGreaterThanAccountBalanceExceptionHandle(int accountId, double amount) {
+        if(amount > getBalance(accountId))
+            throw new BalanceSmallerThanAmountToWithdrawException(amount);
+    }
 }

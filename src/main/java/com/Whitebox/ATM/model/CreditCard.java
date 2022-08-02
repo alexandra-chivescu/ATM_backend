@@ -1,8 +1,13 @@
 package com.Whitebox.ATM.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 @Entity(name = "credit_cards")
 @Table(
@@ -13,26 +18,43 @@ import java.security.NoSuchAlgorithmException;
 
 public class CreditCard {
     @Id
+    @SequenceGenerator(
+            name = "credit_card_sequence",
+            sequenceName = "credit_card_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy= GenerationType.SEQUENCE,
+            generator = "credit_card_sequence"
+    )
+    @Column(
+            name = "id",
+            updatable = false
+    )
+    private int id;
     @Column(
             name = "card_number",
             nullable = false
     )
+    @NotBlank(message = "The card number is required.")
     private String cardNumber;
     @Column(
             name = "pin",
-            nullable = false,
-            unique = true
+            nullable = false
     )
+    @NotBlank(message = "The pin is required.")
     private byte secretPin[];
     @Column(
             name = "cvv",
             nullable = false
     )
+    @NotBlank(message = "The cvv is required.")
     private String cvv;
     @Column(
             name = "expiration_date",
             nullable = false
     )
+    @NotBlank(message = "The expiration date is required.")
     private String expirationDate;
 
     @ManyToOne
@@ -66,11 +88,11 @@ public class CreditCard {
 
     }
 
-    public CreditCard(Account account, Bank bank, String pin, String cvv, String expireDate) {
+    public CreditCard(Account account, Bank bank, String pin, String cvv) {
         this.cardNumber = bank.getCreditCardNumber();
         this.account = account;
         this.cvv = cvv;
-        this.expirationDate = expireDate;
+        this.expirationDate = cardExpirationDateGenerator();
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -92,6 +114,15 @@ public class CreditCard {
             System.exit(1);
         }
         return false;
+    }
+
+    public String cardExpirationDateGenerator() {
+        Calendar dateOfToday = Calendar.getInstance();
+        dateOfToday.add(Calendar.YEAR, 3);
+        Date nextYear = dateOfToday.getTime();
+        DateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy");
+        String nextYearDate = dateFormat.format(nextYear);
+        return nextYearDate;
     }
 
 

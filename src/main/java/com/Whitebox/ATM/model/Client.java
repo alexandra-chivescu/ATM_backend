@@ -3,6 +3,7 @@ package com.Whitebox.ATM.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,21 +35,35 @@ public class Client {
             nullable = false
     )
     @JsonProperty("first_name")
+    @NotBlank(message = "The first name is required.")
     private String firstName;
     @Column(
             name = "last_name",
             nullable = false
     )
+    @NotBlank(message = "The last name is required.")
     private String lastName;
     @Column(
             name = "email",
             nullable = false
     )
+    @NotBlank(message = "The email is required.")
     private String email;
     @OneToMany(
             cascade = CascadeType.ALL
     )
     private List<Account> accounts;
+    @ManyToOne
+    private Bank bank;
+
+    public Client(int clientId, String firstName, String lastName, String email, Bank bank) {
+        this.id = clientId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.bank = bank;
+        this.accounts = new ArrayList<Account>();
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -114,11 +129,6 @@ public class Client {
     public int numAccounts() {
 
         return this.accounts.size();
-    }
-
-    public double getAccountBalance(int accountIndex) {
-
-        return this.accounts.get(accountIndex).getBalance();
     }
 
     public String getAccountId(int accountIndex) {

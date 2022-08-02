@@ -1,9 +1,8 @@
 package com.Whitebox.ATM.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import javax.validation.constraints.NotBlank;
+import java.util.*;
 
 @Entity(name="banks")
 @Table(name="banks")
@@ -28,45 +27,37 @@ public class Bank {
             nullable = false,
             unique = true
     )
+    @NotBlank(message = "The name of the bank is required.")
     private String name;
-    @OneToMany
-    private List<Client> users;
+    @OneToMany(
+            cascade = CascadeType.ALL
+    )
+    private List<Client> clients;
     @OneToMany
     private List<Account> accounts;
-    @OneToMany
+    @OneToMany(
+            cascade = CascadeType.ALL
+    )
     private List<CreditCard> creditCards;
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public Bank(String name) {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Bank(int id, String name) {
         this.id = id;
         this.name = name;
-        this.users = new ArrayList<Client>();
+        this.clients = new ArrayList<Client>();
         this.accounts = new ArrayList<Account>();
         this.creditCards = new ArrayList<CreditCard>();
     }
 
     public Bank() {
 
-    }
-
-    public int generateID() {
-        int id = 0;
-        boolean notUniqueID;
-        do {
-            notUniqueID = false;
-            for (Client user : this.users) {
-                if(id == user.getId()) {
-                    notUniqueID = true;
-                    break;
-                }
-            }
-            id ++;
-
-        } while (notUniqueID);
-        return id;
     }
 
     private int getCheckDigit(String number) {
@@ -115,20 +106,21 @@ public class Bank {
         this.creditCards.add(creditCard);
     }
 
+    public void addUser(int clientId, String firstName, String lastName, String email, String pin, String cvv) {
+        Client client = new Client(clientId, firstName, lastName, email, this);
+        this.clients.add(client);
 
-    public Client addUser(String firstName, String lastName, String email) {
-        Client newUser = new Client(firstName, lastName, email);
-        this.users.add(newUser);
+        Account account = new Account(AccountType.SAVINGS, client, this);
+        client.addAccount(account);
+        this.addAccount(account);
 
-        Account newAccount = new Account(AccountType.SAVINGS, newUser, this);
-        newUser.addAccount(newAccount);
-        this.addAccount(newAccount);
-
-        return newUser;
+        CreditCard creditCard = new CreditCard(account, this, pin, cvv);
+        account.addCreditCard(creditCard);
+        this.addCreditCard(creditCard);
     }
 
     public Client userAcceptCard(int idUser, String pin) {
-        for(Client user: this.users) {
+        for(Client user: this.clients) {
             for(CreditCard creditCard : this.creditCards) {
                 if (user.getId() == idUser && creditCard.isValidPin(pin))
                     return user;

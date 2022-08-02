@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,7 +22,7 @@ public class CreditCardService {
     CreditCardDao creditCardDao;
 
     public void save(Account account, Bank bank, String pin, String cvv, String expireDate) {
-        CreditCard creditCard = new CreditCard(account, bank, pin, cvv, expireDate);
+        CreditCard creditCard = new CreditCard(account, bank, pin, cvv);
         creditCard.setCardNumber(bank.getCreditCardNumber());
         creditCard.setAccount(account);
         creditCard.setCvv(cvv);

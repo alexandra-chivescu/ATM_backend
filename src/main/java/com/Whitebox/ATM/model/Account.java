@@ -1,6 +1,7 @@
 package com.Whitebox.ATM.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,13 +9,8 @@ import java.util.List;
 @Table(name="accounts")
 public class Account {
     @Id
-    @SequenceGenerator(
-            name = "account_sequence",
-            sequenceName = "account_sequence",
-            allocationSize = 1
-    )
     @GeneratedValue(
-            strategy= GenerationType.SEQUENCE,
+            strategy= GenerationType.AUTO,
             generator = "account_sequence"
     )
     @Column(
@@ -24,6 +20,7 @@ public class Account {
     private int id;
     @Column(name = "account_type")
     @Enumerated(EnumType.STRING)
+    @NotBlank(message = "The account type is required.")
     private AccountType accountType;
 
     @ManyToOne
@@ -38,7 +35,7 @@ public class Account {
     public Account(AccountType name, Client holder, Bank bank) {
         this.accountType = name;
         this.holder = holder;
-        this.id = bank.generateID();
+        this.id = id;
 
         this.transactions = new ArrayList<Transaction>();
         this.creditCards = new ArrayList<CreditCard>();
