@@ -3,6 +3,7 @@ package com.Whitebox.ATM;
 import com.Whitebox.ATM.Exceptions.BalanceSmallerThanAmountToWithdrawException;
 import com.Whitebox.ATM.Exceptions.NegativeAmountException;
 import com.Whitebox.ATM.Exceptions.ResourceNotFoundException;
+import com.Whitebox.ATM.Exceptions.WrongAlgorithmForHashingPinException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +41,15 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         body.put("message", "Resource not found.");
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(WrongAlgorithmForHashingPinException.class)
+    public ResponseEntity<Object> handleWrongAlgorithmForHashingPinException() {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", "The algorithm does not exist.");
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
 }

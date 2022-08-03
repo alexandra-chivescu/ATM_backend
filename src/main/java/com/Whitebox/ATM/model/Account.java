@@ -20,7 +20,6 @@ public class Account {
     private int id;
     @Column(name = "account_type")
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "The account type is required.")
     private AccountType accountType;
 
     @ManyToOne
@@ -63,8 +62,7 @@ public class Account {
 
     public String getInfoLine() {
         double balance = this.getBalance();
-        //Write for each currency
-        return String.format("%s : lei %.02f : %s", this.id, balance, this.accountType);
+        return String.format("Account type: " + this.accountType);
     }
 
     public double getBalance() {

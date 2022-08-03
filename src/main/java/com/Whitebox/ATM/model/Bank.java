@@ -2,6 +2,7 @@ package com.Whitebox.ATM.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Entity(name="banks")
@@ -106,7 +107,7 @@ public class Bank {
         this.creditCards.add(creditCard);
     }
 
-    public void addUser(int clientId, String firstName, String lastName, String email, String pin, String cvv) {
+    public void addClient(int clientId, String firstName, String lastName, String email, String pin, String cvv) {
         Client client = new Client(clientId, firstName, lastName, email, this);
         this.clients.add(client);
 
@@ -119,7 +120,7 @@ public class Bank {
         this.addCreditCard(creditCard);
     }
 
-    public Client userAcceptCard(int idUser, String pin) {
+    public Client userAcceptCard(int idUser, String pin) throws NoSuchAlgorithmException {
         for(Client user: this.clients) {
             for(CreditCard creditCard : this.creditCards) {
                 if (user.getId() == idUser && creditCard.isValidPin(pin))

@@ -7,22 +7,20 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+
 @Repository
 public interface ClientDao extends JpaRepository<Client, Integer> {
-   /* @Query(
-            //TODO
-            value= "",
-            nativeQuery = true
-    )
-    CreditCard findCreditCards(int userId); */
-
     @Query("select c from clients c where c.email = :email")
     Client findUserByEmailAddress(@Param("email") String email);
 
+    @Transactional
     @Modifying
     @Query(
-            value = "update clients set first_name = :first_name where email = :email",
+            value = "update clients" +
+                    " set first_name = :first_name, last_name = :last_name " +
+                    "where email = :email",
             nativeQuery = true
     )
-    int updateUserNameByEmailAddress(@Param("first_name") String first_name, @Param("email") String email);
+    int updateUserNameByEmailAddress(@Param("first_name") String first_name, @Param("last_name") String last_name, @Param("email") String email);
 }

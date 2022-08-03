@@ -1,7 +1,10 @@
 package com.Whitebox.ATM.model;
 
+import com.Whitebox.ATM.Exceptions.WrongAlgorithmForHashingPinException;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -42,13 +45,13 @@ public class CreditCard {
             name = "pin",
             nullable = false
     )
-    @NotBlank(message = "The pin is required.")
     private byte secretPin[];
     @Column(
             name = "cvv",
             nullable = false
     )
     @NotBlank(message = "The cvv is required.")
+    @Size(min=3, max=3, message = "The cvv must contain 3 digits.")
     private String cvv;
     @Column(
             name = "expiration_date",
@@ -98,22 +101,26 @@ public class CreditCard {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             this.secretPin = md.digest(pin.getBytes());
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("Exception NoSuchAlgorithmException was found.");
-            e.printStackTrace();
-            System.exit(1);
+            try {
+                throw new WrongAlgorithmForHashingPinException("The algorithm does not exist. ");
+            } catch (WrongAlgorithmForHashingPinException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
-    public boolean isValidPin(String pin) {
+    public boolean isValidPin(String pin)  {
+        MessageDigest md = null;
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            return MessageDigest.isEqual(md.digest(pin.getBytes()), this.secretPin);
+            md = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("Caught error NoSuchAlgorithmException :'(");
-            e.printStackTrace();
-            System.exit(1);
+            try {
+                throw new WrongAlgorithmForHashingPinException("The algorithm does not exist.");
+            } catch (WrongAlgorithmForHashingPinException ex) {
+                ex.printStackTrace();
+            }
         }
-        return false;
+        return MessageDigest.isEqual(md.digest(pin.getBytes()), this.secretPin);
     }
 
     public String cardExpirationDateGenerator() {

@@ -23,9 +23,9 @@ public class BankService {
         bankDao.save(bank);
     }
 
-    public void addUser(int clientId, String firstName, String lastName, String email, int bankId, String pin, String cvv) {
+    public void addClient(int clientId, String firstName, String lastName, String email, int bankId, String pin, String cvv) {
         Bank bank = bankDao.findById(bankId).get();
-        bank.addUser(clientId, firstName, lastName, email, pin, cvv);
+        bank.addClient(clientId, firstName, lastName, email, pin, cvv);
         bankDao.save(bank);
     }
 

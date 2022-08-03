@@ -1,6 +1,7 @@
 package com.Whitebox.ATM.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Positive;
 import java.util.Date;
 
 @Entity(name="transactions")
@@ -25,6 +26,7 @@ public class Transaction {
             name = "amount",
             nullable = false
     )
+    @Positive(message = "The transaction amount must be greater than 0.")
     private double amount;
     private Date date;
     @ManyToOne
