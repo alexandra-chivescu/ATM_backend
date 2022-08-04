@@ -49,7 +49,8 @@ public class AtmService {
         //                 for this use numAccounts
         // if(accountId > userDao.getClientById)
         int[] values = Banknote.getValuesOfBanknotes();
-        int[] amounts = Banknote.getAmountsOfBanknotes();
+        //getAmountsOfBanknotes
+        int[] amounts = Banknote.getValuesOfBanknotes();
 
             List<Integer[]> results = withdrawSolution(values, amounts, new int[values.length], amount, 0);
             boolean isWithdrawable = true; //for the verification of the algorithm (see the left banknotes in the terminal)

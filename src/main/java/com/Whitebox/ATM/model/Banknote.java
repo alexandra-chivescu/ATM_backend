@@ -1,20 +1,15 @@
 package com.Whitebox.ATM.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
 public enum Banknote {
-    ONE_LEI("1LEU", 1, 10),
-    FIVE_LEI("5LEI", 5, 10),
-    TEN_LEI("10LEI", 10, 10),
-    TWENTY_LEI("20LEI", 20, 10),
-    FIFTY_LEI("50LEI", 50, 10),
-    ONE_HUNDREAD_LEI("100LEI", 100, 10);
+    ONE_LEI("1LEU", 1),
+    FIVE_LEI("5LEI", 5),
+    TEN_LEI("10LEI", 10),
+    TWENTY_LEI("20LEI", 20),
+    FIFTY_LEI("50LEI", 50),
+    ONE_HUNDREAD_LEI("100LEI", 100);
 
     private final String name;
     private final int value;
-    private final int amount;
 
     public String getName() {
         return name;
@@ -24,14 +19,9 @@ public enum Banknote {
         return value;
     }
 
-    public int getAmount() {
-        return amount;
-    }
-
-    Banknote(String name, int value, int amount) {
+    Banknote(String name, int value) {
         this.name = name;
         this.value = value;
-        this.amount = amount;
     }
 
     public static int[] getValuesOfBanknotes() {
@@ -42,15 +32,5 @@ public enum Banknote {
             i++;
         }
         return banknoteValues;
-    }
-
-    public static int[] getAmountsOfBanknotes() {
-        int[] banknoteAmounts= new int[6];
-        int i = 0;
-        for( Banknote banknote : Banknote.values()) {
-            banknoteAmounts[i] = banknote.amount;
-            i++;
-        }
-        return banknoteAmounts;
     }
 }

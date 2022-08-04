@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@ResponseBody
 public class BankController {
 
     @Autowired

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@ResponseBody
+@RequestMapping("/atms")
 public class AtmController {
 
     @Autowired
@@ -17,7 +17,7 @@ public class AtmController {
     @Autowired
     AtmDao atmDao;
 
-    @PostMapping ("/atms")
+    @PostMapping ("/")
     public String addAtm(@RequestBody AtmDto atmDto) {
         atmService.save(atmDto.location);
         return "New Atm successfully created.";
