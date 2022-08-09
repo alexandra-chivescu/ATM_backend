@@ -1,5 +1,7 @@
 package com.Whitebox.ATM.model;
 
+import com.Whitebox.ATM.model.dto.AtmDto;
+
 import javax.persistence.*;
 
 @Entity(name="banknote_funds")
@@ -44,5 +46,11 @@ public class BanknoteFund {
 
     public BanknoteFund() {
 
+    }
+
+    public BanknoteFund(Banknote banknote, int amount, ATM atm) {
+        this.banknote = banknote;
+        this.amount = amount;
+        this.atm = atm;
     }
 }

@@ -28,10 +28,11 @@ public class AtmService {
     @Autowired
     BanknoteFundDao banknoteFundDao;
 
-    public void save(String location) {
+    public ATM save(String location) {
         ATM atm = new ATM();
         atm.setLocation(location);
         atmDao.save(atm);
+        return atm;
     }
 
     public ATM setFunds(int atmId, List<BanknoteFund> banknoteFunds) {

@@ -31,9 +31,8 @@ public class AtmController {
     BanknoteFundService banknoteFundService;
 
     @PostMapping ("/")
-    public String addAtm(@RequestBody AtmDto atmDto) {
-        atmService.save(atmDto.location);
-        return "New Atm successfully created.";
+    public ResponseEntity<ATM> addAtm(@RequestBody AtmDto atmDto) {
+        return ResponseEntity.ok(atmService.save(atmDto.location));
     }
 
     @PostMapping ("/funds")
@@ -51,9 +50,9 @@ public class AtmController {
         return atmService.getBalance(clientDepositDto.accountId);
     }
 
-    @PatchMapping("/withdraw/{amountToWithdraw}")
-    public void withdraw(@RequestBody ClientDepositDto clientDepositDto, @PathVariable double amountToWithdraw) {
-        atmService.withdraw(clientDepositDto.accountId, amountToWithdraw, clientDepositDto.atmId);
+    @PatchMapping("/withdraw")
+    public void withdraw(@RequestBody ClientDepositDto clientDepositDto) {
+        atmService.withdraw(clientDepositDto.accountId, clientDepositDto.amountToWithdraw, clientDepositDto.atmId);
     }
 
     @PatchMapping("/deposit")
@@ -61,9 +60,9 @@ public class AtmController {
         atmService.deposit(clientDepositDto.accountId, clientDepositDto.amount);
     }
 
-    @PatchMapping("/transfer/{toAccount}/{amount}")
-    public void transfer(@RequestBody ClientDepositDto clientDepositDto, @PathVariable int toAccount, @PathVariable double amount) {
-        atmService.transfer(clientDepositDto.accountId, toAccount, amount);
+    @PatchMapping("/transfer")
+    public void transfer(@RequestBody ClientDepositDto clientDepositDto) {
+        atmService.transfer(clientDepositDto.accountId, clientDepositDto.toAccount, clientDepositDto.amount);
     }
 
 }

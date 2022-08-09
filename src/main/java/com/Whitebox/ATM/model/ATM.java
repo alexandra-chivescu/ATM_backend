@@ -42,4 +42,7 @@ public class ATM {
         this.location = location;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 }
