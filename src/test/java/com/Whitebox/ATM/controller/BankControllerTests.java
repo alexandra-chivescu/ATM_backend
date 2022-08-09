@@ -15,8 +15,14 @@ public class BankControllerTests extends Tests {
     @Test
     public void return_success_when_save_client() {
         bank = saveNewBank(1, "BCR");
-        client = saveNewClient(1, "Alexandra", "Chivescu", "alechivescu@gmail.com", 1, "233", "1234");
-
+        client = new ClientDepositDto();
+        client.setClientId(1);
+        client.setFirstName("Alexandra");
+        client.setLastName("Chivescu");
+        client.setEmail("alechivescu@gmail.com");
+        client.setBankId(1);
+        client.setCvv("233");
+        client.setPin("1234");
         given().port(super.port)
                 .contentType("application/json")
                 .body(client)
