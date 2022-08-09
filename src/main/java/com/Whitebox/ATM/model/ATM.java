@@ -2,6 +2,7 @@ package com.Whitebox.ATM.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Entity(name = "atms")
 @Table(name = "atms")
@@ -28,7 +29,17 @@ public class ATM {
     @NotBlank(message = "The location is required.")
     private String location;
 
+    @OneToMany(
+            cascade = CascadeType.ALL
+    )
+    private List<BanknoteFund> banknoteFunds;
+
+    public void setBanknoteFunds(List<BanknoteFund> banknoteFunds) {
+        this.banknoteFunds = banknoteFunds;
+    }
+
     public void setLocation(String location) {
         this.location = location;
     }
+
 }

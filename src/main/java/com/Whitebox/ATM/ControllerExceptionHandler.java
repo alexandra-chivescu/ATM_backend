@@ -1,9 +1,6 @@
 package com.Whitebox.ATM;
 
-import com.Whitebox.ATM.Exceptions.BalanceSmallerThanAmountToWithdrawException;
-import com.Whitebox.ATM.Exceptions.NegativeAmountException;
-import com.Whitebox.ATM.Exceptions.ResourceNotFoundException;
-import com.Whitebox.ATM.Exceptions.WrongAlgorithmForHashingPinException;
+import com.Whitebox.ATM.Exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

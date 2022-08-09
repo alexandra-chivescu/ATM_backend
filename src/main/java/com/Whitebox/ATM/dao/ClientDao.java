@@ -22,5 +22,15 @@ public interface ClientDao extends JpaRepository<Client, Integer> {
                     "where email = :email",
             nativeQuery = true
     )
-    int updateUserNameByEmailAddress(@Param("first_name") String first_name, @Param("last_name") String last_name, @Param("email") String email);
+    void updateUserNameByEmailAddress(@Param("first_name") String first_name, @Param("last_name") String last_name, @Param("email") String email);
+
+    @Transactional
+    @Modifying
+    @Query(
+            value = "select accounts_id" +
+                    " from clients_accounts " +
+                    "where clients_id = :client_id and accounts_id = :account_id",
+            nativeQuery = true
+    )
+    int returnAccountIfExists(@Param("client_id") int clientId, @Param("account_id") int accountId);
 }

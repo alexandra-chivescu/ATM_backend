@@ -1,7 +1,7 @@
 package com.Whitebox.ATM.model;
 
 public enum Banknote {
-    ONE_LEI("1LEU", 1),
+    ONE_LEU("1LEU", 1),
     FIVE_LEI("5LEI", 5),
     TEN_LEI("10LEI", 10),
     TWENTY_LEI("20LEI", 20),

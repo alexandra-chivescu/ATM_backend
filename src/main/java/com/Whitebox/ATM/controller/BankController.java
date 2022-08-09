@@ -43,8 +43,8 @@ public class BankController {
     }
 
     @PatchMapping("/clients")
-    public int updateClientNameByEmail(@RequestBody ClientDepositDto clientDepositDto) {
-        return clientService.updateClientNameByEmailAddress(clientDepositDto.firstName, clientDepositDto.lastName, clientDepositDto.email);
+    public void updateClientNameByEmail(@RequestBody ClientDepositDto clientDepositDto) {
+        clientService.updateClientNameByEmailAddress(clientDepositDto.firstName, clientDepositDto.lastName, clientDepositDto.email);
     }
 
     @PostMapping("/banks")

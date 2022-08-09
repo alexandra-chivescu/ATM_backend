@@ -105,35 +105,12 @@ public class Client {
         return accounts;
     }
 
-    public Client(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.accounts = new ArrayList<Account>();
-    }
-
     public Client() {
 
     }
 
     public void addAccount(Account account) {
         this.accounts.add(account);
-    }
-
-    public void printAccountsInfo() {
-        System.out.println(this.firstName + " " + this.lastName + "'s accounts info: \n");
-        accounts.forEach(account -> System.out.println(account.getInfoLine()));
-
-    }
-
-    public int numAccounts() {
-
-        return this.accounts.size();
-    }
-
-    public String getAccountId(int accountIndex) {
-
-        return String.valueOf(this.accounts.get(accountIndex).getId());
     }
 
 }

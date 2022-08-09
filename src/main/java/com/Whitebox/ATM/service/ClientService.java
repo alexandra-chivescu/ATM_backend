@@ -33,8 +33,8 @@ public class ClientService {
         return clientDao.findUserByEmailAddress(email);
     }
 
-    public int updateClientNameByEmailAddress(String first_name ,String last_name, String email) {
-        return clientDao.updateUserNameByEmailAddress(first_name,last_name, email);
+    public void updateClientNameByEmailAddress(String first_name ,String last_name, String email) {
+        clientDao.updateUserNameByEmailAddress(first_name,last_name, email);
     }
 
     public void addAccount(int clientId, int bankId, String pin, String cvv, String accountType) {

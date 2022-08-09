@@ -26,7 +26,6 @@ public class Transaction {
             name = "amount",
             nullable = false
     )
-    @Positive(message = "The transaction amount must be greater than 0.")
     private double amount;
     private Date date;
     @ManyToOne
