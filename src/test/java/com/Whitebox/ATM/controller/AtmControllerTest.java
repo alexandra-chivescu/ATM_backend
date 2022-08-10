@@ -35,7 +35,7 @@ public class AtmControllerTest extends Tests {
 
     @Test
     public void return_success_when_set_funds_for_atm() {
-        atm = saveNewAtmWithBanknoteFund("Aviatiei");
+        atm = saveNewAtm("Aviatiei");
         ATM atm1 = new ATM();
         atm1.setLocation("Aviatiei");
         atm1.setId(2);
@@ -96,7 +96,6 @@ public class AtmControllerTest extends Tests {
         atm = saveNewAtm("Dristor");
         bank = saveNewBank(1, "BCR");
         client = saveNewClient(1, "Alexandra", "Chivescu", "alechivescu@gmail.com", 1, "233", "1234");
-        client.setAtmId(1);
         client.setAmount(500);
         client.setAccountId(1);
         given().port(super.port)

@@ -30,19 +30,6 @@ public class Tests {
 
     public AtmDto saveNewAtm(String location) {
         AtmDto atm = new AtmDto();
-        atm.setId(2);
-        atm.setLocation(location);
-        given().
-                port(this.port)
-                .contentType("application/json")
-                .body(atm)
-                .post("/atms/");
-
-        return atm;
-    }
-
-    public AtmDto saveNewAtmWithBanknoteFund(String location) {
-        AtmDto atm = new AtmDto();
         ATM atm1 = new ATM();
         atm.setId(2);
         atm.setLocation(location);
