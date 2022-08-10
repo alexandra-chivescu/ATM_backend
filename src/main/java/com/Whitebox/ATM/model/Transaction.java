@@ -1,19 +1,11 @@
 package com.Whitebox.ATM.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
+import javax.validation.constraints.Positive;
 import java.util.Date;
 
-@Entity(name="transaction")
-@Table(name="transaction")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Entity(name="transactions")
+@Table(name="transactions")
 public class Transaction {
     @Id
     @SequenceGenerator(
@@ -37,15 +29,27 @@ public class Transaction {
     private double amount;
     private Date date;
     @ManyToOne
-    @JoinColumn(
-            name = "account_id",
-            referencedColumnName = "id"
-    )
     private Account account;
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
 
     public Transaction(double amount, Account account) {
         this.amount = amount;
         this.account = account;
         this.date = new Date();
+    }
+
+    public Transaction() {
+
     }
 }

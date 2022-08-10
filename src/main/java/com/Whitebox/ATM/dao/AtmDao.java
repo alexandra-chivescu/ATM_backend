@@ -8,6 +8,4 @@ import java.util.List;
 
 @Repository
 public interface AtmDao extends JpaRepository<ATM, Integer> {
-
-    List<ATM> findAll();
 }

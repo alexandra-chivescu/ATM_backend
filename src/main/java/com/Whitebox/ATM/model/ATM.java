@@ -1,18 +1,11 @@
 package com.Whitebox.ATM.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
 
-@Entity(name = "atm")
-@Table(name = "atm")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Entity(name = "atms")
+@Table(name = "atms")
 public class ATM {
     @Id
     @SequenceGenerator(
@@ -33,7 +26,23 @@ public class ATM {
             name = "location",
             nullable = false
     )
+    @NotBlank(message = "The location is required.")
     private String location;
 
+    @OneToMany(
+            cascade = CascadeType.ALL
+    )
+    private List<BanknoteFund> banknoteFunds;
 
+    public void setBanknoteFunds(List<BanknoteFund> banknoteFunds) {
+        this.banknoteFunds = banknoteFunds;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

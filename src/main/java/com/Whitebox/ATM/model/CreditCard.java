@@ -1,46 +1,63 @@
 package com.Whitebox.ATM.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.Whitebox.ATM.Exceptions.WrongAlgorithmForHashingPinException;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
-@Entity(name = "credit_card")
+@Entity(name = "credit_cards")
 @Table(
-        name="credit_card",
+        name="credit_cards",
         uniqueConstraints = {
                 @UniqueConstraint(name = "card_number_unique", columnNames = "card_number")
         })
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+
 public class CreditCard {
     @Id
+    @SequenceGenerator(
+            name = "credit_card_sequence",
+            sequenceName = "credit_card_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy= GenerationType.SEQUENCE,
+            generator = "credit_card_sequence"
+    )
+    @Column(
+            name = "id",
+            updatable = false
+    )
+    private int id;
     @Column(
             name = "card_number",
             nullable = false
     )
+    @NotBlank(message = "The card number is required.")
     private String cardNumber;
     @Column(
             name = "pin",
-            nullable = false,
-            unique = true
+            nullable = false
     )
     private byte secretPin[];
     @Column(
             name = "cvv",
             nullable = false
     )
+    @NotBlank(message = "The cvv is required.")
+    @Size(min=3, max=3, message = "The cvv must contain 3 digits.")
     private String cvv;
     @Column(
             name = "expiration_date",
             nullable = false
     )
+    @NotBlank(message = "The expiration date is required.")
     private String expirationDate;
 
     @ManyToOne
@@ -50,32 +67,69 @@ public class CreditCard {
     )
     private Account account;
 
-    public CreditCard(Account account, Bank bank, String pin, String cvv, String expireDate) {
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public void setSecretPin(byte[] secretPin) {
+        this.secretPin = secretPin;
+    }
+
+    public void setCvv(String cvv) {
+        this.cvv = cvv;
+    }
+
+    public void setExpirationDate(String expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public CreditCard() {
+
+    }
+
+    public CreditCard(Account account, Bank bank, String pin, String cvv) {
         this.cardNumber = bank.getCreditCardNumber();
         this.account = account;
         this.cvv = cvv;
-        this.expirationDate = expireDate;
+        this.expirationDate = cardExpirationDateGenerator();
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             this.secretPin = md.digest(pin.getBytes());
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("Exception NoSuchAlgorithmException was found.");
-            e.printStackTrace();
-            System.exit(1);
+            try {
+                throw new WrongAlgorithmForHashingPinException("The algorithm does not exist. ");
+            } catch (WrongAlgorithmForHashingPinException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
-    public boolean isValidPin(String pin) {
+    public boolean isValidPin(String pin)  {
+        MessageDigest md = null;
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            return MessageDigest.isEqual(md.digest(pin.getBytes()), this.secretPin);
+            md = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("Caught error NoSuchAlgorithmException :'(");
-            e.printStackTrace();
-            System.exit(1);
+            try {
+                throw new WrongAlgorithmForHashingPinException("The algorithm does not exist.");
+            } catch (WrongAlgorithmForHashingPinException ex) {
+                ex.printStackTrace();
+            }
         }
-        return false;
+        return MessageDigest.isEqual(md.digest(pin.getBytes()), this.secretPin);
+    }
+
+    public String cardExpirationDateGenerator() {
+        Calendar dateOfToday = Calendar.getInstance();
+        dateOfToday.add(Calendar.YEAR, 3);
+        Date nextYear = dateOfToday.getTime();
+        DateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy");
+        String nextYearDate = dateFormat.format(nextYear);
+        return nextYearDate;
     }
 
 

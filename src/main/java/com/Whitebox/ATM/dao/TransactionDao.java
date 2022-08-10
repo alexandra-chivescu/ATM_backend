@@ -9,5 +9,4 @@ import java.util.List;
 
 @Repository
 public interface TransactionDao extends JpaRepository<Transaction, Integer> {
-    List<Transaction> findAll();
 }
