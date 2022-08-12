@@ -11,7 +11,6 @@ import com.Whitebox.ATM.service.AdministratorService;
 import com.Whitebox.ATM.service.BankService;
 import com.Whitebox.ATM.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -66,7 +65,7 @@ public class BankController {
         return "New administrator successfully created.";
     }
 
-    @GetMapping("/administrators")
+    @GetMapping("/administrators/login")
     public void getCredentials(@RequestBody AdministratorDto administratorDto) {
         administratorService.verifyCredentials(administratorDto.username, administratorDto.password);
     }
