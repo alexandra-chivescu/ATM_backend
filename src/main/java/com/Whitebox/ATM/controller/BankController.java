@@ -1,13 +1,17 @@
 package com.Whitebox.ATM.controller;
 import com.Whitebox.ATM.dao.BankDao;
 import com.Whitebox.ATM.dao.ClientDao;
+import com.Whitebox.ATM.model.Administrator;
 import com.Whitebox.ATM.model.Client;
+import com.Whitebox.ATM.model.dto.AdministratorDto;
 import com.Whitebox.ATM.model.dto.BankDto;
 import com.Whitebox.ATM.model.dto.ClientDepositDto;
 import com.Whitebox.ATM.model.dto.ClientDto;
+import com.Whitebox.ATM.service.AdministratorService;
 import com.Whitebox.ATM.service.BankService;
 import com.Whitebox.ATM.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +32,9 @@ public class BankController {
 
     @Autowired
     BankService bankService;
+
+    @Autowired
+    AdministratorService administratorService;
 
     @GetMapping("/clients")
     public List<ClientDto> getClients() {
@@ -51,6 +58,17 @@ public class BankController {
     public String addBank(@RequestBody BankDto bankDto) {
         bankService.save(bankDto.id, bankDto.name);
         return "New bank successfully created.";
+    }
+
+    @PostMapping("/administrators")
+    public String addAdministrator(@RequestBody AdministratorDto administratorDto) {
+        administratorService.save(administratorDto.username, administratorDto.password);
+        return "New administrator successfully created.";
+    }
+
+    @GetMapping("/administrators")
+    public void getCredentials(@RequestBody AdministratorDto administratorDto) {
+        administratorService.verifyCredentials(administratorDto.username, administratorDto.password);
     }
 
     @PostMapping("/clients")
