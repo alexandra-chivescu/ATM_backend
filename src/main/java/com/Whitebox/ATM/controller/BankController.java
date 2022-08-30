@@ -64,9 +64,8 @@ public class BankController {
     }
 
     @PostMapping("/")
-    public String addAdministrator(@RequestBody AdministratorDto administratorDto) {
-        administratorService.save(administratorDto.username, administratorDto.password);
-        return "New administrator successfully created.";
+    public ResponseEntity<Administrator> addAdministrator(@RequestBody AdministratorDto administratorDto) {
+        return ResponseEntity.ok(administratorService.save(administratorDto.username, administratorDto.password));
     }
 
     @PostMapping("/login")
