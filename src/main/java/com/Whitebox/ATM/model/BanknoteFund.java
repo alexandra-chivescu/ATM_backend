@@ -1,7 +1,4 @@
 package com.Whitebox.ATM.model;
-
-import com.Whitebox.ATM.model.dto.AtmDto;
-
 import javax.persistence.*;
 
 @Entity(name="banknote_funds")

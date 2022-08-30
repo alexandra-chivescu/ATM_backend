@@ -45,4 +45,16 @@ public class ATM {
     public void setId(int id) {
         this.id = id;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public List<BanknoteFund> getBanknoteFunds() {
+        return banknoteFunds;
+    }
 }

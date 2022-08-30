@@ -15,15 +15,17 @@ public class BanknoteFundService {
     @Autowired
     BanknoteFundDao banknoteFundDao;
 
-    public List <BanknoteFund> addFunds(List<BanknoteFund> banknoteFunds, int atm_id) {
+    @Autowired
+    AtmService atmService;
+
+    public List <BanknoteFund> addFunds(List<BanknoteFund> banknoteFunds, int atmId) {
         banknoteFunds.forEach(banknoteFund ->
-                addAmount(banknoteFund.getBanknote(), banknoteFund.getAmount(), atm_id));
-        return getBanknoteFunds();
+                addAmount(banknoteFund.getBanknote(), banknoteFund.getAmount(), atmId));
+        return getBanknoteFunds(atmId);
     }
 
-    public List<BanknoteFund> getBanknoteFunds() {
-        List<BanknoteFund> banknoteFunds = banknoteFundDao.findAll();
-        return banknoteFunds;
+    public List<BanknoteFund> getBanknoteFunds(int atmId) {
+        return banknoteFundDao.findByAtmId(atmId);
     }
 
     public void addAmount(Banknote banknote, int amount, int atm_id) {

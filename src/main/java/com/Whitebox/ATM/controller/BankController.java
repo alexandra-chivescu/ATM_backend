@@ -3,14 +3,14 @@ import com.Whitebox.ATM.dao.BankDao;
 import com.Whitebox.ATM.dao.ClientDao;
 import com.Whitebox.ATM.model.Administrator;
 import com.Whitebox.ATM.model.Client;
-import com.Whitebox.ATM.model.dto.AdministratorDto;
-import com.Whitebox.ATM.model.dto.BankDto;
-import com.Whitebox.ATM.model.dto.ClientDepositDto;
-import com.Whitebox.ATM.model.dto.ClientDto;
+import com.Whitebox.ATM.model.dto.*;
 import com.Whitebox.ATM.service.AdministratorService;
+import com.Whitebox.ATM.service.AtmService;
 import com.Whitebox.ATM.service.BankService;
 import com.Whitebox.ATM.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 
 @RestController
+@RequestMapping("/admin")
 public class BankController {
 
     @Autowired
@@ -35,12 +36,15 @@ public class BankController {
     @Autowired
     AdministratorService administratorService;
 
+    @Autowired
+    AtmService atmService;
+
     @GetMapping("/clients")
-    public List<ClientDto> getClients() {
-        return clientService.getListClients()
+    public ResponseEntity<List<ClientDto>> getClients() {
+        return new ResponseEntity<>(clientService.getListActiveClients()
                 .stream()
                 .map(ClientDto::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @GetMapping("/clients/{email}")
@@ -59,15 +63,15 @@ public class BankController {
         return "New bank successfully created.";
     }
 
-    @PostMapping("/administrators")
+    @PostMapping("/")
     public String addAdministrator(@RequestBody AdministratorDto administratorDto) {
         administratorService.save(administratorDto.username, administratorDto.password);
         return "New administrator successfully created.";
     }
 
-    @GetMapping("/administrators/login")
-    public void getCredentials(@RequestBody AdministratorDto administratorDto) {
-        administratorService.verifyCredentials(administratorDto.username, administratorDto.password);
+    @PostMapping("/login")
+    public ResponseEntity<Administrator> loginAdministrator(@RequestBody AdministratorDto administratorDto) {
+        return ResponseEntity.ok(administratorService.verifyAndGetUser(administratorDto.username, administratorDto.password).get());
     }
 
     @PostMapping("/clients")
@@ -76,11 +80,16 @@ public class BankController {
         return "New client successfully created and added to the bank with id = " + clientDepositDto.bankId;
     }
 
+    @DeleteMapping("/clients/{id}")
+    public ResponseEntity<Client> inactivateClient(@PathVariable int id) {
+        clientService.inactivateClient(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/accounts/{accountType}")
     public String addAccount(@RequestBody ClientDepositDto clientDepositDto,  @PathVariable String accountType) {
         clientService.addAccount(clientDepositDto.clientId, clientDepositDto.bankId, clientDepositDto.pin, clientDepositDto.cvv, accountType);
         return "New account successfully created.";
     }
-
 
 }

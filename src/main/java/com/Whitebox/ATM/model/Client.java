@@ -30,6 +30,12 @@ public class Client {
             updatable = false
     )
     private int id;
+
+    @Column(
+            name = "is_active"
+    )
+    boolean isActive;
+
     @Column(
             name = "first_name",
             nullable = false
@@ -63,6 +69,7 @@ public class Client {
         this.email = email;
         this.bank = bank;
         this.accounts = new ArrayList<Account>();
+        this.isActive = true;
     }
 
     public void setId(int id) {
@@ -83,6 +90,10 @@ public class Client {
 
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public int getId() {

@@ -56,13 +56,24 @@ public class Account {
         return id;
     }
 
-    public Account() {
-
+    public List<CreditCard> getCreditCards() {
+        return creditCards;
     }
 
-    public String getInfoLine() {
-        double balance = this.getBalance();
-        return String.format("Account type: " + this.accountType);
+    public Client getHolder() {
+        return holder;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public AccountType getAccountType() {
+        return accountType;
+    }
+
+    public Account() {
+
     }
 
     public double getBalance() {

@@ -8,6 +8,7 @@ import com.Whitebox.ATM.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,8 +26,8 @@ public class ClientService {
     @Autowired
     CreditCardDao creditCardDao;
 
-    public List<Client> getListClients() {
-        return clientDao.findAll();
+    public List<Client> getListActiveClients() {
+        return clientDao.findActiveClients();
     }
 
     public Client getClientByEmailAddress(String email) {
@@ -47,5 +48,11 @@ public class ClientService {
         account.addCreditCard(creditCard);
         bankDao.findById(bankId).get().addCreditCard(creditCard);
         creditCardDao.save(creditCard);
+    }
+
+    public void inactivateClient(int id) {
+        Client client = clientDao.findById(id).get();
+        client.setActive(false);
+        clientDao.save(client);
     }
 }

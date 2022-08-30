@@ -87,6 +87,10 @@ public class CreditCard {
         this.account = account;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public CreditCard() {
 
     }
@@ -133,4 +137,23 @@ public class CreditCard {
     }
 
 
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public byte[] getSecretPin() {
+        return secretPin;
+    }
+
+    public String getCvv() {
+        return cvv;
+    }
+
+    public String getExpirationDate() {
+        return expirationDate;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
 }

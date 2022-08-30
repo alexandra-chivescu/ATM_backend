@@ -3,16 +3,20 @@ package com.Whitebox.ATM.controller;
 import com.Whitebox.ATM.dao.AccountDao;
 import com.Whitebox.ATM.dao.AtmDao;
 import com.Whitebox.ATM.model.ATM;
+import com.Whitebox.ATM.model.Administrator;
 import com.Whitebox.ATM.model.BanknoteFund;
-import com.Whitebox.ATM.model.dto.AtmDto;
-import com.Whitebox.ATM.model.dto.ClientDepositDto;
+import com.Whitebox.ATM.model.Client;
+import com.Whitebox.ATM.model.dto.*;
 import com.Whitebox.ATM.service.AtmService;
 import com.Whitebox.ATM.service.BanknoteFundService;
+import com.Whitebox.ATM.service.CreditCardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/atms")
@@ -30,29 +34,46 @@ public class AtmController {
     @Autowired
     BanknoteFundService banknoteFundService;
 
+    @Autowired
+    CreditCardService creditCardService;
+
     @PostMapping ("/")
     public ResponseEntity<ATM> addAtm(@RequestBody AtmDto atmDto) {
-        return ResponseEntity.ok(atmService.save(atmDto.location));
-    }
-
-    @PostMapping ("/funds")
-    public ResponseEntity<ATM> setFunds(@RequestBody AtmDto atmDto) {
-        return ResponseEntity.ok(atmService.setFunds(atmDto.id, atmDto.banknoteFunds));
+        return ResponseEntity.ok(atmService.save(atmDto.location, atmDto.banknoteFunds));
     }
 
     @PatchMapping("/funds")
-    public List<BanknoteFund> addFunds(@RequestBody AtmDto atmDto) {
-        return banknoteFundService.addFunds(atmDto.banknoteFunds, atmDto.id);
+    public ResponseEntity<List<BanknoteFund>> addFunds(@RequestBody AtmDto atmDto) {
+        return ResponseEntity.ok(banknoteFundService.addFunds(atmDto.banknoteFunds, atmDto.id));
     }
+
+    @GetMapping("/")
+    public ResponseEntity<List<AtmDto>> getAtms() {
+        return new ResponseEntity<>(atmService.getAtms()
+                .stream()
+                .map(AtmDto::new)
+                .collect(Collectors.toList()), HttpStatus.OK);
+    }
+
+    @PostMapping("/clients/login")
+    public ResponseEntity<ClientDto> loginClient(@RequestBody CreditCardDto creditCardDto) {
+        return ResponseEntity.ok(creditCardService.verifyCardDetails(creditCardDto.cardNumber, creditCardDto.cvv, creditCardDto.pin));
+    }
+
+    @PostMapping("/clients/logout")
+    public void logout(@RequestBody ClientDepositDto clientDepositDto) {
+        atmService.logout(clientDepositDto.clientId);
+    }
+
 
     @GetMapping("/balance")
     public double getAccountBalance(@RequestBody ClientDepositDto clientDepositDto) {
-        return atmService.getBalance(clientDepositDto.accountId);
+        return atmService.getBalance(clientDepositDto.clientId);
     }
 
     @PatchMapping("/withdraw")
     public void withdraw(@RequestBody ClientDepositDto clientDepositDto) {
-        atmService.withdraw(clientDepositDto.accountId, clientDepositDto.amountToWithdraw, clientDepositDto.atmId);
+        atmService.withdraw(clientDepositDto.clientId, clientDepositDto.amountToWithdraw, clientDepositDto.token);
     }
 
     @PatchMapping("/deposit")

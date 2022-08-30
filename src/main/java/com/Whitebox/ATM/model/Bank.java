@@ -34,7 +34,9 @@ public class Bank {
             cascade = CascadeType.ALL
     )
     private List<Client> clients;
-    @OneToMany
+    @OneToMany(
+            cascade = CascadeType.ALL
+    )
     private List<Account> accounts;
     @OneToMany(
             cascade = CascadeType.ALL
@@ -47,6 +49,10 @@ public class Bank {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
     }
 
     public Bank(int id, String name) {

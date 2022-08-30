@@ -38,9 +38,12 @@ public class AccountService {
         accountDao.save(account);
     }
 
-    public double getBalance(int accountId) {
-        Account account = accountDao.findById(accountId).get();
-        return account.getBalance();
+    public double getBalance(int clientId) {
+        List<Account> accounts = accountDao.findAllByHolder_Id(clientId);
+        return accounts
+                .stream()
+                .mapToDouble(Account::getBalance)
+                .sum();
     }
 
 

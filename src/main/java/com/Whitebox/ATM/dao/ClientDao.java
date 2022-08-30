@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 public interface ClientDao extends JpaRepository<Client, Integer> {
@@ -27,10 +28,12 @@ public interface ClientDao extends JpaRepository<Client, Integer> {
     @Transactional
     @Modifying
     @Query(
-            value = "select accounts_id" +
-                    " from clients_accounts " +
-                    "where clients_id = :client_id and accounts_id = :account_id",
+            value = "select * " +
+                    " from clients " +
+                    " where is_active = true",
             nativeQuery = true
     )
-    int returnAccountIfExists(@Param("client_id") int clientId, @Param("account_id") int accountId);
+    List<Client> findActiveClients();
+
+
 }

@@ -15,9 +15,18 @@ public class ClientDepositDto {
     public int bankId;
     public String pin;
     public String cvv;
+    public String token;
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setAtmId(int atmId) {

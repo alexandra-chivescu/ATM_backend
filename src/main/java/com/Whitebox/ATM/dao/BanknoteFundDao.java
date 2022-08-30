@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 public interface BanknoteFundDao extends JpaRepository<BanknoteFund, Integer> {
     @Transactional
@@ -39,4 +40,14 @@ public interface BanknoteFundDao extends JpaRepository<BanknoteFund, Integer> {
             nativeQuery = true
     )
     void updateAmountAfterWithdraw(@Param("banknote") int banknote, @Param("amount") int amount, @Param("atmId") int atmId);
+
+    @Transactional
+    @Modifying
+    @Query(
+            value = "select *" +
+                    " from banknote_funds" +
+                    " where atm_id = :atmId",
+            nativeQuery = true
+    )
+    List<BanknoteFund> findByAtmId(@Param("atmId") int atmId);
 }
