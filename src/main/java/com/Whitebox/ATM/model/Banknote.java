@@ -1,5 +1,7 @@
 package com.Whitebox.ATM.model;
 
+import java.util.Arrays;
+
 public enum Banknote {
     ONE_LEU("1LEU", 1),
     FIVE_LEI("5LEI", 5),
@@ -18,6 +20,8 @@ public enum Banknote {
     public int getValue() {
         return value;
     }
+
+
 
     Banknote(String name, int value) {
         this.name = name;

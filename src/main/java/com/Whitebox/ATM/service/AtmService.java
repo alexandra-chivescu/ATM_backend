@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,9 +61,10 @@ public class AtmService {
         return accountService.getBalance(clientId);
     }
 
-    public void deposit(int accountId, double amount) {
+    public void deposit(int clientId, double amount) {
+        Account account = accountDao.findFirstByHolder_Id(clientId);
         amountLessThanZeroExceptionHandle(amount);
-        accountService.addTransaction(accountId, amount);
+        accountService.addTransaction(account.getId(), amount);
     }
 
     public void transfer(int accountId, int toAccount, double amount) {
@@ -75,7 +74,7 @@ public class AtmService {
         accountService.addTransaction(toAccount, amount);
     }
 
-    public void withdraw(int clientId, double amount, String token) {
+    public Map<Banknote, Integer> withdraw(int clientId, double amount, String token) {
         Account account = accountDao.findFirstByHolder_Id(clientId);
         if (!redisService.clientHasToken(account.getHolder().getId())) {
             throw new InvalidParameterException("Invalid data");
@@ -92,30 +91,28 @@ public class AtmService {
         int atmId = atmDao.findAll().stream().findFirst().get().getId();
         int[] values = Banknote.getValuesOfBanknotes();
         int[] amounts = banknoteFundDao.selectAmount(atmId);
+        int[] savedAmounts = Arrays.copyOf(amounts, amounts.length);
 
-            List<Integer[]> results = withdrawSolution(values, amounts, new int[values.length], amount, 0);
-            boolean isWithdrawable = true; //for the verification of the algorithm (see the left banknotes in the terminal)
-            int[] copyAmounts = amounts;
+        Map<Banknote, Integer> banknotes = new HashMap<>();
 
-            if (results.size() > 0) {
-                for (int i = 0; i < values.length; i++) {
-                    if (amounts[i] - results.get(results.size() - 1)[i] < 0) {
-                        isWithdrawable = false;
-                        throw new NotEnoughBanknotesInTheAtmException();
-                    } else
-                        amounts[i] = amounts[i] - results.get(results.size() - 1)[i];
-                }
-                if (isWithdrawable == false)
-                    amounts = copyAmounts;
-            } else {
-                isWithdrawable = false;
-                throw new NotEnoughBanknotesInTheAtmException();
+        List<Integer[]> results = withdrawSolution(values, amounts, new int[values.length], amount, 0);
+
+        if (results.size() > 0) {
+            for (int i = 0; i < values.length; i++) {
+                if (amounts[i] - results.get(results.size() - 1)[i] < 0) {
+                    throw new NotEnoughBanknotesInTheAtmException();
+                } else
+                    amounts[i] = amounts[i] - results.get(results.size() - 1)[i];
             }
-            if (isWithdrawable == true) {
-                for (int i = 0; i < amounts.length; i++)
-                    banknoteFundDao.updateAmountAfterWithdraw(i, amounts[i], atmId);
-            }
+        } else {
+            throw new NotEnoughBanknotesInTheAtmException();
+        }
+        for (int i = 0; i < amounts.length; i++) {
+            banknoteFundDao.updateAmountAfterWithdraw(i, amounts[i], atmId);
+            banknotes.put(Banknote.values()[i], savedAmounts[i] - amounts[i]);
+        }
         accountService.addTransaction(account.getId(), -1 * amount);
+        return banknotes;
     }
 
     public static List<Integer[]> withdrawSolution(int[] values, int[] amounts, int[] variation, double sumToWithdraw, int position) {
@@ -127,7 +124,6 @@ public class AtmService {
                     int[] newvariation = variation.clone();
                     newvariation[i]++;
                     List<Integer[]> newList = withdrawSolution(values, amounts, newvariation, sumToWithdraw, i);
-                    //TODO
                     if (newList != null) {
                         list.addAll(newList);
                     }
@@ -157,12 +153,12 @@ public class AtmService {
     }
 
     public void amountLessThanZeroExceptionHandle(double amount) {
-        if(amount <= 0)
+        if (amount <= 0)
             throw new NegativeAmountException(amount);
     }
 
     public void amountGreaterThanAccountBalanceExceptionHandle(int accountId, double amount) {
-        if(amount > getBalance(accountId))
+        if (amount > getBalance(accountId))
             throw new BalanceSmallerThanAmountToWithdrawException(amount);
     }
 

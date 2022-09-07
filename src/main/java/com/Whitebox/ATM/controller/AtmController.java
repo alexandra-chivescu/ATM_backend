@@ -3,9 +3,7 @@ package com.Whitebox.ATM.controller;
 import com.Whitebox.ATM.dao.AccountDao;
 import com.Whitebox.ATM.dao.AtmDao;
 import com.Whitebox.ATM.model.ATM;
-import com.Whitebox.ATM.model.Administrator;
 import com.Whitebox.ATM.model.BanknoteFund;
-import com.Whitebox.ATM.model.Client;
 import com.Whitebox.ATM.model.dto.*;
 import com.Whitebox.ATM.service.AtmService;
 import com.Whitebox.ATM.service.BanknoteFundService;
@@ -66,19 +64,19 @@ public class AtmController {
     }
 
 
-    @GetMapping("/balance")
-    public double getAccountBalance(@RequestBody ClientDepositDto clientDepositDto) {
-        return atmService.getBalance(clientDepositDto.clientId);
+    @GetMapping("/balance/{id}")
+    public double getAccountBalance(@PathVariable int id) {
+        return atmService.getBalance(id);
     }
 
     @PatchMapping("/withdraw")
-    public void withdraw(@RequestBody ClientDepositDto clientDepositDto) {
-        atmService.withdraw(clientDepositDto.clientId, clientDepositDto.amountToWithdraw, clientDepositDto.token);
+    public ResponseEntity<WithdrawDto> withdraw(@RequestBody ClientDepositDto clientDepositDto) {
+        return ResponseEntity.ok(new WithdrawDto(atmService.withdraw(clientDepositDto.clientId, clientDepositDto.amountToWithdraw, clientDepositDto.token)));
     }
 
     @PatchMapping("/deposit")
     public void deposit(@RequestBody ClientDepositDto clientDepositDto) {
-        atmService.deposit(clientDepositDto.accountId, clientDepositDto.amount);
+        atmService.deposit(clientDepositDto.clientId, clientDepositDto.amount);
     }
 
     @PatchMapping("/transfer")
