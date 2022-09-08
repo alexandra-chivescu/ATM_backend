@@ -1,5 +1,7 @@
 package com.Whitebox.ATM.model;
 
+import com.Whitebox.ATM.model.dto.ClientDto;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.security.NoSuchAlgorithmException;

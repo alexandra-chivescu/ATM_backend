@@ -9,4 +9,5 @@ import java.util.List;
 
 @Repository
 public interface BankDao extends JpaRepository<Bank, Integer> {
+    Bank findBankByName (String bankName);
 }

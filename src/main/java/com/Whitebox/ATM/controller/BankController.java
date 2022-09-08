@@ -74,9 +74,8 @@ public class BankController {
     }
 
     @PostMapping("/clients")
-    public String addClient(@RequestBody ClientDepositDto clientDepositDto) {
-        bankService.addClient(clientDepositDto.clientId, clientDepositDto.firstName, clientDepositDto.lastName, clientDepositDto.email, clientDepositDto.bankId, clientDepositDto.pin, clientDepositDto.cvv);
-        return "New client successfully created and added to the bank with id = " + clientDepositDto.bankId;
+    public void addClient(@RequestBody ClientDepositDto clientDepositDto) {
+        bankService.addClient(clientDepositDto.clientId, clientDepositDto.firstName, clientDepositDto.lastName, clientDepositDto.email, clientDepositDto.bankName, clientDepositDto.pin, clientDepositDto.cvv);
     }
 
     @DeleteMapping("/clients/{id}")

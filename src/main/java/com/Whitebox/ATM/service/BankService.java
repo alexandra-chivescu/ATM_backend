@@ -1,10 +1,8 @@
 package com.Whitebox.ATM.service;
 
 import com.Whitebox.ATM.dao.BankDao;
-import com.Whitebox.ATM.model.Account;
-import com.Whitebox.ATM.model.AccountType;
 import com.Whitebox.ATM.model.Bank;
-import com.Whitebox.ATM.model.Client;
+import com.Whitebox.ATM.model.dto.ClientDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +21,8 @@ public class BankService {
         bankDao.save(bank);
     }
 
-    public void addClient(int clientId, String firstName, String lastName, String email, int bankId, String pin, String cvv) {
-        Bank bank = bankDao.findById(bankId).get();
+    public void addClient(int clientId, String firstName, String lastName, String email, String bankName, String pin, String cvv) {
+        Bank bank = bankDao.findBankByName(bankName);
         bank.addClient(clientId, firstName, lastName, email, pin, cvv);
         bankDao.save(bank);
     }
