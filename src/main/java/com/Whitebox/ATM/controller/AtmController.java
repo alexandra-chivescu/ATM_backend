@@ -35,7 +35,7 @@ public class AtmController {
     @Autowired
     CreditCardService creditCardService;
 
-    @PostMapping ("/")
+    @PostMapping
     public ResponseEntity<ATM> addAtm(@RequestBody AtmDto atmDto) {
         return ResponseEntity.ok(atmService.save(atmDto.location, atmDto.banknoteFunds));
     }
@@ -45,7 +45,7 @@ public class AtmController {
         return ResponseEntity.ok(banknoteFundService.addFunds(atmDto.banknoteFunds, atmDto.id));
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<AtmDto>> getAtms() {
         return new ResponseEntity<>(atmService.getAtms()
                 .stream()

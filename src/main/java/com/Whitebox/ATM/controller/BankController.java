@@ -63,7 +63,7 @@ public class BankController {
         return "New bank successfully created.";
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Administrator> addAdministrator(@RequestBody AdministratorDto administratorDto) {
         return ResponseEntity.ok(administratorService.save(administratorDto.username, administratorDto.password));
     }
@@ -75,7 +75,7 @@ public class BankController {
 
     @PostMapping("/clients")
     public void addClient(@RequestBody ClientDepositDto clientDepositDto) {
-        bankService.addClient(clientDepositDto.clientId, clientDepositDto.firstName, clientDepositDto.lastName, clientDepositDto.email, clientDepositDto.bankName, clientDepositDto.pin, clientDepositDto.cvv);
+        bankService.addClient(clientDepositDto);
     }
 
     @DeleteMapping("/clients/{id}")
